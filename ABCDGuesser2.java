@@ -11,7 +11,7 @@ import components.utilities.FormatChecker;
  * @author Chenjie Wu
  *
  */
-public class ABCDGuesser1 {
+public class ABCDGuesser2 {
     /**
      * Repeatedly asks the user for a positive real number until the user enters
      * one. Returns the positive real number.
@@ -22,6 +22,7 @@ public class ABCDGuesser1 {
      *            the output stream
      * @return a positive real number entered by the user
      */
+
     private static double getPositiveDouble(SimpleReader in, SimpleWriter out) {
         boolean quitLoop = false;
         String resStr = "";
@@ -67,6 +68,21 @@ public class ABCDGuesser1 {
         }
         double result = Double.parseDouble(resStr);
         return result;
+    }
+
+    /**
+     * calculate the relative error between experimental value and theoretical
+     * value
+     * 
+     * @param result
+     *            The experimental value
+     * @param u
+     *            the theoretical value
+     * @return the relative error
+     * @requires the theoretical value cannot be 0
+     */
+    private static double relativeError(double result, double u) {
+        return (result - u) / u;
     }
 
     /**
@@ -120,14 +136,10 @@ public class ABCDGuesser1 {
         double c = 0;
         double d = 0;
 
-        int indexa = 0;
-        while (indexa < powNums.length) {
-            int indexb = 0;
-            while (indexb < powNums.length) {
-                int indexc = 0;
-                while (indexc < powNums.length) {
-                    int indexd = 0;
-                    while (indexd < powNums.length) {
+        for (int indexa = 0; indexa < powNums.length; indexa++) {
+            for (int indexb = 0; indexb < powNums.length; indexb++) {
+                for (int indexc = 0; indexc < powNums.length; indexc++) {
+                    for (int indexd = 0; indexd < powNums.length; indexd++) {
                         double temp = Math.pow(w, powNums[indexa])
                                 * Math.pow(x, powNums[indexb])
                                 * Math.pow(y, powNums[indexc])
@@ -135,26 +147,20 @@ public class ABCDGuesser1 {
                         if (Math.abs((temp - u) / u) < Math
                                 .abs(relativeError)) {
                             result = temp;
-                            relativeError = (result - u) / u;
+                            relativeError = relativeError(result, u);
                             a = powNums[indexa];
                             b = powNums[indexb];
                             c = powNums[indexc];
                             d = powNums[indexd];
                         }
-                        indexd++;
                     }
-                    indexc++;
                 }
-                indexb++;
             }
-            indexa++;
         }
 
-        out.print("The result with smallest relative error is: ");
-        out.println(result, 2, false);
-        out.print("The relative error is: ");
-        out.print(100 * relativeError, 2, false);
-        out.print("%\n");
+        out.print(
+                "The result with smallest relative error is: " + result + "\n");
+        out.print("The relative error is: " + 100 * relativeError + "%\n");
         out.print("The a, b, c, d of this are respectively: " + a + " " + b
                 + " " + c + " " + d);
 
